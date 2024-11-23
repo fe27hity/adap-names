@@ -1,10 +1,11 @@
-import { Name, DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "./Name";
+import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
+import { Name } from "./Name";
 
 export class StringName implements Name {
-  protected delimiter: string = DEFAULT_DELIMITER;
 
-  protected name: string = "";
-  protected length: number = 0;
+    protected delimiter: string = DEFAULT_DELIMITER;
+    protected name: string = "";
+    protected noComponents: number = 0;
 
   /** @methodtype object creation-method */
   constructor(other: string, delimiter?: string) {
@@ -15,7 +16,7 @@ export class StringName implements Name {
       this.name = other;
       const regex = new RegExp(`(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`, "g");
       let componentsWithDelimSplit = this.name.split(regex);;
-      this.length = componentsWithDelimSplit.length;
+      this.noComponents = componentsWithDelimSplit.length;
     }
   }
 
@@ -46,7 +47,7 @@ export class StringName implements Name {
 
   /** @methodtype get-method */
   public getNoComponents(): number {
-    return this.length;
+    return this.noComponents;
   }
 
   /** @methodtype get-method */
@@ -71,13 +72,13 @@ export class StringName implements Name {
 
     arrayOfComponents.splice(n, 0, c);
     this.name = arrayOfComponents.join(this.delimiter);
-    this.length++;
+    this.noComponents++;
   }
 
   /** @methodtype command-method */
   public append(c: string): void {
     this.name += this.delimiter + c;
-    this.length++;
+    this.noComponents++;
   }
 
   /** @methodtype command-method */
@@ -86,7 +87,7 @@ export class StringName implements Name {
     let arrayOfComponents = this.name.split(regex);
     arrayOfComponents.splice(n, 1);
     this.name = arrayOfComponents.join(this.delimiter);
-    this.length--;
+    this.noComponents--;
   }
 
   /** @methodtype command-method */

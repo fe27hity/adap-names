@@ -1,31 +1,21 @@
-import { Name, DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "./Name";
+import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
+import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 
 export class StringName extends AbstractName {
-  protected name: string = "";
-  protected length: number = 0;
 
-  /** @methodtype object creation-method */
-  constructor(other: string, delimiter?: string) {
-    if (delimiter) {
-      super(delimiter);
-    } else {
-      super();
+    protected name: string = "";
+    protected noComponents: number = 0;
+
+    constructor(other: string, delimiter?: string) {
+        super();
+        throw new Error("needs implementation");
     }
-    if (other) {
-      this.name = other;
-      const regex = new RegExp(
-        `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
-        "g"
-      );
-      let componentsWithDelimSplit = this.name.split(regex);
-      this.length = componentsWithDelimSplit.length;
-    }
-  }
+  
 
   /** @methodtype get-method */
   getNoComponents(): number {
-    return this.length;
+    return this.noComponents;
   }
 
   /** @methodtype get-method */
@@ -59,13 +49,13 @@ export class StringName extends AbstractName {
 
     arrayOfComponents.splice(i, 0, c);
     this.name = arrayOfComponents.join(this.delimiter);
-    this.length++;
+    this.noComponents++;
   }
 
   /** @methodtype command-method */
   append(c: string) {
     this.name += this.delimiter + c;
-    this.length++;
+    this.noComponents++;
   }
 
   /** @methodtype command-method */
@@ -77,7 +67,7 @@ export class StringName extends AbstractName {
     let arrayOfComponents = this.name.split(regex);
     arrayOfComponents.splice(i, 1);
     this.name = arrayOfComponents.join(this.delimiter);
-    this.length--;
+    this.noComponents--;
   }
 
   cloneSubclass(): Name {

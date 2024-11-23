@@ -1,4 +1,5 @@
-import { Name, DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "./Name";
+import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
+import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
 
 export class StringArrayName extends AbstractName {
@@ -15,7 +16,6 @@ export class StringArrayName extends AbstractName {
       this.components = other;
     }
   }
-
   /** @methodtype get-method */
   getNoComponents(): number {
     return this.components.length;
