@@ -8,8 +8,20 @@ export class StringName extends AbstractName {
     protected noComponents: number = 0;
 
     constructor(other: string, delimiter?: string) {
+      if (delimiter) {
+        super(delimiter);
+      } else {
         super();
-        throw new Error("needs implementation");
+      }
+      if (other) {
+        this.name = other;
+      const regex = new RegExp(
+        `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+        "g"
+      );
+      let componentsWithDelimSplit = this.name.split(regex);
+      this.noComponents = componentsWithDelimSplit.length;
+      }
     }
   
 
