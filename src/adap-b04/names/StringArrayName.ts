@@ -14,6 +14,8 @@ export class StringArrayName extends AbstractName {
     this.components = other;
 
     this.assertDelimiterSet(delimiter ? delimiter : DEFAULT_DELIMITER);
+
+    this.assertStringArrayNameInvariant();
   }
 
   public getNoComponents(): number {
@@ -82,7 +84,7 @@ export class StringArrayName extends AbstractName {
   }
 
   protected assertStringArrayNameInvariant() {
-    this.assertValidComponentState();
+    this.assertValidDelimiterState();
     InvalidStateException.assertIsNotNullOrUndefined(
       this.components,
       "components undefined"

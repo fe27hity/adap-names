@@ -223,7 +223,7 @@ export abstract class AbstractName implements Name {
 
   // Invariant checks
 
-  protected assertValidComponentState(): void {
+  protected assertValidDelimiterState(): void {
     InvalidStateException.assertIsNotNullOrUndefined(
       this.delimiter,
       "this.delimiter is null or undefined"

@@ -22,6 +22,8 @@ export class StringName extends AbstractName {
     this.noComponents = other ? componentsWithDelimSplit.length : 0;
 
     this.assertDelimiterSet(delimiter ? delimiter : DEFAULT_DELIMITER);
+
+    this.assertStringNameInvariant();
   }
 
   public getNoComponents(): number {
@@ -122,7 +124,7 @@ export class StringName extends AbstractName {
   }
 
   protected assertStringNameInvariant() {
-    this.assertValidComponentState();
+    this.assertValidDelimiterState();
     InvalidStateException.assertIsNotNullOrUndefined(
       this.name,
       "components undefined"
