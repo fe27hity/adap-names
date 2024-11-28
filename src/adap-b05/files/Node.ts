@@ -65,6 +65,12 @@ export class Node {
     if (this.getBaseName() === bn) {
       matchingNodes.add(this);
     }
+    if("getTargetNode" in this){
+      const childMatches = (this as any).getTargetNode().findNodes(bn);
+      for (const match of childMatches) {
+        matchingNodes.add(match);
+      }
+    }
 
     if ("getChildren" in this) {
       for (const child of (this as any).getChildren()) {
