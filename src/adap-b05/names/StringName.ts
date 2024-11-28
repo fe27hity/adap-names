@@ -1,71 +1,143 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringName extends AbstractName {
+  protected name: string = "";
+  protected noComponents: number = 0;
 
-    protected name: string = "";
-    protected noComponents: number = 0;
+  constructor(other: string, delimiter?: string) {
+    super(delimiter);
 
-    constructor(other: string, delimiter?: string) {
-        super();
-        throw new Error("needs implementation or deletion");
+    this.assertTruthyParameter(other);
+    const regex = new RegExp(
+      `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+      "g"
+    );
+    let componentsWithDelimSplit = other.split(regex);
+    this.assertCorrectParamComponents(componentsWithDelimSplit);
+
+    this.name = other;
+    this.noComponents = other ? componentsWithDelimSplit.length : 0;
+
+    this.assertDelimiterSet(delimiter ? delimiter : DEFAULT_DELIMITER);
+
+    this.assertStringNameInvariant();
+  }
+
+  public getNoComponents(): number {
+    return this.noComponents;
+  }
+
+  public getComponent(i: number): string {
+    this.assertValidIndex(i);
+
+    const regex = new RegExp(
+      `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+      "g"
+    );
+    let arrayOfComponents = this.name.split(regex);
+    return arrayOfComponents[i];
+  }
+
+  public setComponent(i: number, c: string) {
+    this.assertValidIndex(i);
+    this.assertValidComponent(c);
+
+    const backup = this.deepCopy();
+
+    const regex = new RegExp(
+      `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+      "g"
+    );
+    let arrayOfComponents = this.name.split(regex);
+    arrayOfComponents[i] = c;
+    this.name = arrayOfComponents.join(this.delimiter);
+
+    this.assertComponentWasSet(backup, i, c);
+  }
+
+  public insert(i: number, c: string) {
+    this.assertValidIndex(i);
+    this.assertValidComponent(c);
+
+    const backup = this.deepCopy();
+
+    const regex = new RegExp(
+      `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+      "g"
+    );
+    let arrayOfComponents = this.name.split(regex);
+
+    arrayOfComponents.splice(i, 0, c);
+    this.name = arrayOfComponents.join(this.delimiter);
+    this.noComponents++;
+    this.assertComponentWasInserted(backup, i, c);
+  }
+
+  public append(c: string) {
+    this.assertValidComponent(c);
+
+    const backup = this.deepCopy();
+
+    this.name += (this.noComponents === 0 ? "" : this.delimiter) + c;
+    this.noComponents++;
+
+    this.assertComponentWasAppended(backup, c);
+  }
+
+  public remove(i: number) {
+    this.assertValidIndex(i);
+
+    const backup = this.deepCopy();
+
+    const regex = new RegExp(
+      `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+      "g"
+    );
+    let arrayOfComponents = this.name.split(regex);
+    arrayOfComponents.splice(i, 1);
+    this.name = arrayOfComponents.join(this.delimiter);
+    this.noComponents--;
+
+    this.assertComponentWasRemoved(backup, i);
+  }
+
+  public cloneSubclass(): Name {
+    return Object.assign(new StringName(""), this);
+  }
+
+  public deepCopy(): Name {
+    return new StringName(this.name, this.delimiter);
+    
+  }
+
+  recoverNameStateImpl(backup: Name): void {
+    this.delimiter = backup.getDelimiterCharacter();
+    let array = [];
+    for (let index = 0; index < backup.getNoComponents(); index++) {
+      array.push(backup.getComponent(index));
     }
+    this.name = array.join(this.delimiter);
+    this.noComponents = backup.getNoComponents();
+  }
 
-    public clone(): Name {
-        throw new Error("needs implementation or deletion");
+  protected assertStringNameInvariant() {
+    this.assertValidDelimiterState();
+    InvalidStateException.assertIsNotNullOrUndefined(
+      this.name,
+      "components undefined"
+    );
+    try {
+      const regex = new RegExp(
+        `(?<!\\${ESCAPE_CHARACTER})\\${this.delimiter}`,
+        "g"
+      );
+      let componentsWithDelimSplit = this.name.split(regex);
+      this.assertCorrectParamComponents(componentsWithDelimSplit);
+    } catch (error) {
+      throw new InvalidStateException("a component has an invalid value");
     }
-
-    public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public asDataString(): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public isEqual(other: Name): boolean {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public setComponent(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public insert(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public append(c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public remove(i: number) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
-    }
-
+  }
 }
