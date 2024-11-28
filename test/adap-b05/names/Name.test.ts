@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
 
-import { Name } from "../../../src/adap-b03/names/Name";
-import { StringName } from "../../../src/adap-b03/names/StringName";
-import { StringArrayName } from "../../../src/adap-b03/names/StringArrayName";
+import { Name } from "../../../src/adap-b05/names/Name";
+import { StringName } from "../../../src/adap-b05/names/StringName";
+import { StringArrayName } from "../../../src/adap-b05/names/StringArrayName";
+import { IllegalArgumentException } from "../../../src/adap-b05/common/IllegalArgumentException";
+
 import { AbstractName } from "./AbstractName";
 
 describe("Basic StringName function tests", () => {
@@ -62,8 +64,6 @@ describe("Escape character extravaganza", () => {
 
 
 
-
-// Tests for StringName implementation
 describe("StringName function tests", () => {
   it("should initialize and get number of components", () => {
     const n: Name = new StringName("oss.cs.fau.de");
@@ -102,7 +102,6 @@ describe("StringName function tests", () => {
   });
 });
 
-// Tests for StringArrayName implementation
 describe("StringArrayName function tests", () => {
   it("should initialize and get number of components", () => {
     const n: Name = new StringArrayName(["oss", "cs", "fau", "de"]);
@@ -134,7 +133,6 @@ describe("StringArrayName function tests", () => {
   });
 });
 
-// Tests for delimiter customization
 describe("Delimiter customization tests", () => {
   it("should use custom delimiter", () => {
     const n: Name = new StringName("oss#fau#de", "#");
@@ -155,7 +153,6 @@ describe("Delimiter customization tests", () => {
   });
 });
 
-// Tests for escape character usage
 describe("Escape character tests", () => {
   it("should handle escaping of delimiters", () => {
     const n: Name = new StringName("oss\\.cs.fau.de");
@@ -193,7 +190,6 @@ describe("Escape character tests", () => {
   });
 });
 
-// Tests for the AbstractName class methods
 describe("AbstractName method tests", () => {
   it("should return asString with default delimiter", () => {
     const n: Name = new StringName("oss.cs.fau.de");
@@ -239,9 +235,7 @@ describe("AbstractName method tests", () => {
     const n2: Name = new StringName("oss.cs.fau.de");
     const n3: Name = new StringName("oss.cs.fau");
 
-    // Hash codes for equal data strings should be the same
     expect(n1.getHashCode()).toBe(n2.getHashCode());
-    // Hash codes for different data strings should differ
     expect(n1.getHashCode()).not.toBe(n3.getHashCode());
   });
 
@@ -271,3 +265,104 @@ describe("AbstractName method tests", () => {
   });
 });
 
+describe("AbstractName precondition tests", () => {
+  it("should throw for invalid delimiter during construction", () => {
+    expect(() => new StringName("oss.fau.de", "##")).toThrow(
+      IllegalArgumentException
+    );
+    expect(() => new StringArrayName(["oss", "fau", "de"], "##")).toThrow(
+      IllegalArgumentException
+    );
+  });
+
+  it("should throw for null or undefined delimiter", () => {
+    expect(() => new StringName("oss.fau.de", null as any)).toThrow(
+      IllegalArgumentException
+    );
+  });
+
+  it("should throw for invalid component in insert method", () => {
+    const n: Name = new StringName("oss.fau.de");
+    expect(() => n.insert(1, null as any)).toThrow(IllegalArgumentException);
+    expect(() => n.insert(1, undefined as any)).toThrow(IllegalArgumentException);
+  });
+
+  it("should throw for invalid index in insert method", () => {
+    const n: Name = new StringName("oss.fau.de");
+    expect(() => n.insert(-1, "cs")).toThrow(IllegalArgumentException);
+    expect(() => n.insert(10, "cs")).toThrow(IllegalArgumentException);
+  });
+
+  it("should throw for invalid component in append method", () => {
+    const n: Name = new StringArrayName(["oss", "fau", "de"]);
+    expect(() => n.append(null as any)).toThrow(IllegalArgumentException);
+    expect(() => n.append(undefined as any)).toThrow(IllegalArgumentException);
+  });
+
+  it("should throw for invalid index in setComponent method", () => {
+    const n: Name = new StringName("oss.fau.de");
+    expect(() => n.setComponent(-1, "cs")).toThrow(IllegalArgumentException);
+    expect(() => n.setComponent(10, "cs")).toThrow(IllegalArgumentException);
+  });
+
+  it("should throw for invalid component in setComponent method", () => {
+    const n: Name = new StringName("oss.fau.de");
+    expect(() => n.setComponent(1, null as any)).toThrow(IllegalArgumentException);
+    expect(() => n.setComponent(1, undefined as any)).toThrow(IllegalArgumentException);
+  });
+
+  it("should throw for invalid index in remove method", () => {
+    const n: Name = new StringName("oss.fau.de");
+    expect(() => n.remove(-1)).toThrow(IllegalArgumentException);
+    expect(() => n.remove(10)).toThrow(IllegalArgumentException);
+  });
+});
+
+describe("StringName and StringArrayName initialization precondition tests", () => {
+  it("should throw for invalid components in StringArrayName", () => {
+    expect(() => new StringArrayName(["oss", null as any, "de"])).toThrow(
+      IllegalArgumentException
+    );
+    expect(() => new StringArrayName(["oss", undefined as any, "de"])).toThrow(
+      IllegalArgumentException
+    );
+  });
+
+  it("should throw for null or undefined name in StringName", () => {
+    expect(() => new StringName(null as any)).toThrow(IllegalArgumentException);
+    expect(() => new StringName(undefined as any)).toThrow(IllegalArgumentException);
+  });
+
+});
+
+describe("Erweiterte Tests für Vorbedingungen", () => {
+  describe("Tests für allgemeine Operationen", () => {
+
+    it("should throw for invalid operation when name is empty", () => {
+      const emptyName = new StringArrayName([]);
+      expect(() => emptyName.remove(0)).toThrow(IllegalArgumentException);
+      expect(() => emptyName.setComponent(0, "test")).toThrow(IllegalArgumentException);
+    });
+
+    it("should throw for out-of-range indices in operations", () => {
+      let name = new StringName("oss.fau.de");
+
+      expect(() => name.insert(5, "cs")).toThrow(IllegalArgumentException);
+      expect(() => name.remove(3)).toThrow(IllegalArgumentException);
+    });
+
+    it("should throw for appending invalid components", () => {
+      let name = new StringName("oss.fau.de");
+
+      expect(() => name.append(null as any)).toThrow(IllegalArgumentException);
+    });
+  });
+
+  describe("Spezialfälle für Grenzwerte", () => {
+    it("should handle large number of components correctly", () => {
+      const components = Array.from({ length: 1000 }, (_, i) => `comp${i}`);
+      const name = new StringArrayName(components);
+      expect(name.getComponent(999)).toBe("comp999");
+    });
+  });
+});
