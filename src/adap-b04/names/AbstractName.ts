@@ -66,19 +66,8 @@ export abstract class AbstractName implements Name {
     return this.getNoComponents() == 0;
   }
 
-  public getDelimiterCharacter(): string {
-    return this.delimiter;
-  }
-
-  public concat(other: Name): void {
-    this.assertTruthyParameter(other);
-    for (let i = 0; i < other.getNoComponents(); i++) {
-      this.assertValidComponent(other.getComponent(i));
-    }
-    const backup = this.deepCopy();
-
-    for (let i = 0; i < other.getNoComponents(); i++) {
-      this.append(other.getComponent(i));
+    public getDelimiterCharacter(): string {
+        throw new Error("needs implementation");
     }
   }
 
