@@ -137,16 +137,16 @@ export abstract class AbstractName implements Name {
 
   protected assertValidClone(clone: Name): void {
     const condition = this.isEqual(clone);
-    MethodFailureException: MethodFailedException.assertCondition(
+    MethodFailedException.assertCondition(
       condition,
       "clone does not equal to 'this'"
     );
   }
 
   protected assertDelimiterSet(delim?: string): void {
-    MethodFailureException: MethodFailedException.assertIsNotNullOrUndefined(this.delimiter);
+    MethodFailedException.assertIsNotNullOrUndefined(this.delimiter);
     const condition = this.delimiter === delim;
-    MethodFailureException: MethodFailedException.assertCondition(
+    MethodFailedException.assertCondition(
       condition,
       "Delimiter of 'this' does not equals intended delimiter"
     );
