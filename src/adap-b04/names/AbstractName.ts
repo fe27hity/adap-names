@@ -2,7 +2,7 @@ import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
-import { MethodFailureException } from "../common/MethodFailureException";
+import { MethodFailedException } from "../common/MethodFailedException";
 
 export abstract class AbstractName implements Name {
   protected delimiter: string = DEFAULT_DELIMITER;
@@ -11,6 +11,17 @@ export abstract class AbstractName implements Name {
     this.assertValidDelimter(delimiter);
 
     this.delimiter = delimiter;
+  }
+  concat(other: Name): void {
+    this.assertTruthyParameter(other);
+    for (let i = 0; i < other.getNoComponents(); i++) {
+      this.assertValidComponent(other.getComponent(i));
+    }
+    const backup = this.deepCopy();
+
+    for (let i = 0; i < other.getNoComponents(); i++) {
+      this.append(other.getComponent(i));
+    }
   }
 
   // Abstract methods
@@ -67,9 +78,9 @@ export abstract class AbstractName implements Name {
   }
 
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation");
+      return this.delimiter;
     }
-  }
+  
 
   // Methods to be implemented by subclasses
   abstract getNoComponents(): number;
@@ -126,16 +137,16 @@ export abstract class AbstractName implements Name {
 
   protected assertValidClone(clone: Name): void {
     const condition = this.isEqual(clone);
-    MethodFailureException.assertCondition(
+    MethodFailureException: MethodFailedException.assertCondition(
       condition,
       "clone does not equal to 'this'"
     );
   }
 
   protected assertDelimiterSet(delim?: string): void {
-    MethodFailureException.assertIsNotNullOrUndefined(this.delimiter);
+    MethodFailureException: MethodFailedException.assertIsNotNullOrUndefined(this.delimiter);
     const condition = this.delimiter === delim;
-    MethodFailureException.assertCondition(
+    MethodFailureException: MethodFailedException.assertCondition(
       condition,
       "Delimiter of 'this' does not equals intended delimiter"
     );
@@ -146,13 +157,13 @@ export abstract class AbstractName implements Name {
       this.getNoComponents() ===
       backup.getNoComponents() + other.getNoComponents();
     try {
-      MethodFailureException.assertCondition(
+      MethodFailedException.assertCondition(
         condition,
         "'This' is not properly concatenated"
       );
     } catch (error: any) {
       this.recoverNameState(backup);
-      MethodFailureException.assertCondition(
+      MethodFailedException.assertCondition(
         condition,
         "'This' is not properly concatenated"
       );
@@ -165,10 +176,10 @@ export abstract class AbstractName implements Name {
     backup: Name
   ) {
     try {
-      MethodFailureException.assertCondition(condition, msg);
+      MethodFailedException.assertCondition(condition, msg);
     } catch (error: any) {
       this.recoverNameState(backup);
-      MethodFailureException.assertCondition(condition, msg);
+      MethodFailedException.assertCondition(condition, msg);
     }
   }
 

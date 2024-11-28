@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
 
-import { Name } from "../../../src/adap-b02/names/Name";
-import { StringName } from "../../../src/adap-b02/names/StringName";
-import { StringArrayName } from "../../../src/adap-b02/names/StringArrayName";
+import { Name } from "../../../src/adap-b03/names/Name";
+import { StringName } from "../../../src/adap-b03/names/StringName";
+import { StringArrayName } from "../../../src/adap-b03/names/StringArrayName";
+import { AbstractName } from "./AbstractName";
 
 describe("Basic StringName function tests", () => {
   it("test insert", () => {
@@ -191,3 +192,82 @@ describe("Escape character tests", () => {
     expect(n.asDataString()).toBe("oss\\.cs\\.fau\\.de");
   });
 });
+
+// Tests for the AbstractName class methods
+describe("AbstractName method tests", () => {
+  it("should return asString with default delimiter", () => {
+    const n: Name = new StringName("oss.cs.fau.de");
+    expect(n.asString()).toBe("oss.cs.fau.de");
+  });
+
+  it("should return asString with custom delimiter", () => {
+    const n: Name = new StringName("oss#cs#fau#de", "#");
+    expect(n.asString()).toBe("oss#cs#fau#de");
+  });
+
+  it("should return asDataString correctly", () => {
+    const n: Name = new StringArrayName(["oss", "cs", "fau", "de"]);
+    expect(n.asDataString()).toBe("oss.cs.fau.de");
+  });
+
+  it("should compare equality correctly with isEqual", () => {
+    const n1: Name = new StringName("oss.cs.fau.de");
+    const n2: Name = new StringArrayName(["oss", "cs", "fau", "de"]);
+    expect(n1.isEqual(n2)).toBe(true);
+
+    const n3: Name = new StringName("oss.cs.fau");
+    expect(n1.isEqual(n3)).toBe(false);
+  });
+
+  it("should clone the object correctly", () => {
+    const n1: Name = new StringName("oss.cs.fau.de");
+    const n2: any = n1.clone();
+    expect(n1.isEqual(n2)).toBe(true);
+    n2.append("people");
+    expect(n1.isEqual(n2)).toBe(false);
+  });
+
+  it("should concatenate two Name objects using concat", () => {
+    const n1: Name = new StringArrayName(["oss", "cs"]);
+    const n2: Name = new StringArrayName(["fau", "de"]);
+    n1.concat(n2);
+    expect(n1.asString()).toBe("oss.cs.fau.de");
+  });
+
+  it("should return a valid hash code for different names", () => {
+    const n1: Name = new StringName("oss.cs.fau.de");
+    const n2: Name = new StringName("oss.cs.fau.de");
+    const n3: Name = new StringName("oss.cs.fau");
+
+    // Hash codes for equal data strings should be the same
+    expect(n1.getHashCode()).toBe(n2.getHashCode());
+    // Hash codes for different data strings should differ
+    expect(n1.getHashCode()).not.toBe(n3.getHashCode());
+  });
+
+  it("should identify an empty name correctly", () => {
+    const n: Name = new StringArrayName([]);
+    expect(n.isEmpty()).toBe(true);
+
+    const n2: Name = new StringName("");
+    expect(n2.isEmpty()).toBe(true);
+
+    const n3: Name = new StringName("oss.cs");
+    expect(n3.isEmpty()).toBe(false);
+  });
+
+  it("should retrieve the correct delimiter", () => {
+    const n: Name = new StringName("oss#cs#fau#de", "#");
+    expect(n.getDelimiterCharacter()).toBe("#");
+
+    const n2: Name = new StringArrayName(["oss", "cs", "fau", "de"]);
+    expect(n2.getDelimiterCharacter()).toBe(".");
+  });
+
+  it("should handle complex escape characters correctly", () => {
+    const n: Name = new StringName("oss\\.cs\\.fau\\.de");
+    expect(n.asDataString()).toBe("oss\\.cs\\.fau\\.de");
+    expect(n.asString()).toBe("oss.cs.fau.de");
+  });
+});
+
