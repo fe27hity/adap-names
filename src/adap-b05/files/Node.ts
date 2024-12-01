@@ -2,8 +2,8 @@ import {
   ExceptionType,
   AssertionDispatcher,
 } from "../common/AssertionDispatcher";
-import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
+import { ServiceFailureException } from "../common/ServiceFailureException";
 
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
@@ -13,6 +13,7 @@ export class Node {
   protected parentNode: Directory;
 
   constructor(bn: string, pn: Directory) {
+    this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
     this.doSetBaseName(bn);
     this.parentNode = pn; // why oh why do I have to set this
     this.initialize(pn);
@@ -60,13 +61,22 @@ export class Node {
    * @param bn basename of node being searched for
    */
   public findNodes(bn: string): Set<Node> {
+    try {
+      return this.findSubsequentNodes(bn);
+  } catch (e) {
+      throw new ServiceFailureException("findNodes() failed", e as InvalidStateException);
+  }
+  }
+
+  public findSubsequentNodes(bn: string): Set<Node> {
+    this.assertClassInvariants();
     const matchingNodes = new Set<Node>();
 
     if (this.getBaseName() === bn) {
       matchingNodes.add(this);
     }
     if("getTargetNode" in this){
-      const childMatches = (this as any).getTargetNode().findNodes(bn);
+      const childMatches = (this as any).getTargetNode().findSubsequentNodes(bn);
       for (const match of childMatches) {
         matchingNodes.add(match);
       }
@@ -74,7 +84,7 @@ export class Node {
 
     if ("getChildren" in this) {
       for (const child of (this as any).getChildren()) {
-        const childMatches = child.findNodes(bn);
+        const childMatches = child.findSubsequentNodes(bn);
         for (const match of childMatches) {
           matchingNodes.add(match);
         }

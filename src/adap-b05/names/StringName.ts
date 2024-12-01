@@ -19,7 +19,7 @@ export class StringName extends AbstractName {
     this.assertCorrectParamComponents(componentsWithDelimSplit);
 
     this.name = other;
-    this.noComponents = other ? componentsWithDelimSplit.length : 0;
+    this.noComponents = other == "" ? 1: componentsWithDelimSplit.length;
 
     this.assertDelimiterSet(delimiter ? delimiter : DEFAULT_DELIMITER);
 
@@ -81,7 +81,7 @@ export class StringName extends AbstractName {
 
     const backup = this.deepCopy();
 
-    this.name += (this.noComponents === 0 ? "" : this.delimiter) + c;
+    this.name += this.delimiter + c;
     this.noComponents++;
 
     this.assertComponentWasAppended(backup, c);

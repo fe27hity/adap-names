@@ -91,8 +91,7 @@ describe("StringName function tests", () => {
 
   it("should handle empty name correctly", () => {
     const n: Name = new StringName("");
-    expect(n.isEmpty()).toBe(true);
-    expect(n.getNoComponents()).toBe(0);
+    expect(n.getNoComponents() === 1).toBe(true);
   });
 
   it("should handle escaped delimiter correctly", () => {
@@ -244,7 +243,7 @@ describe("AbstractName method tests", () => {
     expect(n.isEmpty()).toBe(true);
 
     const n2: Name = new StringName("");
-    expect(n2.isEmpty()).toBe(true);
+    expect(n2.getNoComponents() === 1).toBe(true);
 
     const n3: Name = new StringName("oss.cs");
     expect(n3.isEmpty()).toBe(false);
