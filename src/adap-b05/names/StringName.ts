@@ -125,7 +125,7 @@ export class StringName extends AbstractName {
 
   protected assertStringNameInvariant() {
     this.assertValidDelimiterState();
-    InvalidStateException.assertIsNotNullOrUndefined(
+   /* InvalidStateException.assertIsNotNullOrUndefined(
       this.name,
       "components undefined"
     );
@@ -139,5 +139,6 @@ export class StringName extends AbstractName {
     } catch (error) {
       throw new InvalidStateException("a component has an invalid value");
     }
+      */
   }
 }

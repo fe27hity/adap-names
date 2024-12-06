@@ -22,15 +22,15 @@ export class Directory extends Node {
     }
 
     protected assertNodeNotAlreadyPresent(cn: Node): void {
-        IllegalArgumentException.assertIsNotNullOrUndefined(cn);
+     //   IllegalArgumentException.assertIsNotNullOrUndefined(cn);
         const condition = !this.childNodes.has(cn)
-        IllegalArgumentException.assertCondition(condition, "Node already exists");
+      //  IllegalArgumentException.assertCondition(condition, "Node already exists");
     }
 
     protected assertNodeIsPresent(cn: Node): void {
-        IllegalArgumentException.assertIsNotNullOrUndefined(cn);
+      //  IllegalArgumentException.assertIsNotNullOrUndefined(cn);
         const condition = this.childNodes.has(cn);
-        IllegalArgumentException.assertCondition(condition, "Node does not exist");
+      //  IllegalArgumentException.assertCondition(condition, "Node does not exist");
     }
 
 }

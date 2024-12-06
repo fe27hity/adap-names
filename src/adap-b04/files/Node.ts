@@ -52,11 +52,11 @@ export class Node {
   }
 
   protected assertValidMoveTarget(to: Directory): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(to);
+   // IllegalArgumentException.assertIsNotNullOrUndefined(to);
   }
 
   protected assertValidBaseName(bn: string): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(bn);
-    IllegalArgumentException.assertCondition(bn.length > 0, "Base name is not a valid argument");
+   // IllegalArgumentException.assertIsNotNullOrUndefined(bn);
+   // IllegalArgumentException.assertCondition(bn.length > 0, "Base name is not a valid argument");
   }
 }

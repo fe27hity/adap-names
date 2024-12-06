@@ -1,15 +1,15 @@
 import { describe, it, expect } from "vitest";
 
-import { StringName } from "../../../src/adap-b05/names/StringName";
+import { StringName } from "../../../src/adap-b05-old-state/names/StringName";
 
-import { Node } from "../../../src/adap-b05/files/Node";
-import { File } from "../../../src/adap-b05/files/File";
-import { BuggyFile } from "../../../src/adap-b05/files/BuggyFile";
-import { Directory } from "../../../src/adap-b05/files/Directory";
-import { RootNode } from "../../../src/adap-b05/files/RootNode";
-import { ServiceFailureException } from "../../../src/adap-b05/common/ServiceFailureException";
-import { InvalidStateException } from "../../../src/adap-b05/common/InvalidStateException";
-import { Exception } from "../../../src/adap-b05/common/Exception";
+import { Node } from "../../../src/adap-b05-old-state/files/Node";
+import { File } from "../../../src/adap-b05-old-state/files/File";
+import { BuggyFile } from "../../../src/adap-b05-old-state/files/BuggyFile";
+import { Directory } from "../../../src/adap-b05-old-state/files/Directory";
+import { RootNode } from "../../../src/adap-b05-old-state/files/RootNode";
+import { ServiceFailureException } from "../../../src/adap-b05-old-state/common/ServiceFailureException";
+import { InvalidStateException } from "../../../src/adap-b05-old-state/common/InvalidStateException";
+import { Exception } from "../../../src/adap-b05-old-state/common/Exception";
 
 function createFileSystem(): RootNode {
   let rn: RootNode = new RootNode();

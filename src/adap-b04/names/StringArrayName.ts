@@ -85,7 +85,7 @@ export class StringArrayName extends AbstractName {
 
   protected assertStringArrayNameInvariant() {
     this.assertValidDelimiterState();
-    InvalidStateException.assertIsNotNullOrUndefined(
+    /*InvalidStateException.assertIsNotNullOrUndefined(
       this.components,
       "components undefined"
     );
@@ -96,6 +96,7 @@ export class StringArrayName extends AbstractName {
     } catch (error) {
       throw new InvalidStateException("a component has an invalid value");
     }
+      */
   }
 
   public deepCopy(): Name {

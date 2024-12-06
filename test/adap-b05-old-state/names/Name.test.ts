@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 
-import { Name } from "../../../src/adap-b05/names/Name";
-import { StringName } from "../../../src/adap-b05/names/StringName";
-import { StringArrayName } from "../../../src/adap-b05/names/StringArrayName";
-import { IllegalArgumentException } from "../../../src/adap-b05/common/IllegalArgumentException";
+import { Name } from "../../../src/adap-b05-old-state/names/Name";
+import { StringName } from "../../../src/adap-b05-old-state/names/StringName";
+import { StringArrayName } from "../../../src/adap-b05-old-state/names/StringArrayName";
+import { IllegalArgumentException } from "../../../src/adap-b05-old-state/common/IllegalArgumentException";
 
 import { AbstractName } from "./AbstractName";
 

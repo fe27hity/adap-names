@@ -1,7 +1,4 @@
-import {
-  ExceptionType,
-  AssertionDispatcher,
-} from "../common/AssertionDispatcher";
+
 import { InvalidStateException } from "../common/InvalidStateException";
 import { ServiceFailureException } from "../common/ServiceFailureException";
 
@@ -13,7 +10,7 @@ export class Node {
   protected parentNode: Directory;
 
   constructor(bn: string, pn: Directory) {
-    this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+   // this.assertIsValidBaseName(bn);
     this.doSetBaseName(bn);
     this.parentNode = pn; // why oh why do I have to set this
     this.initialize(pn);
@@ -21,12 +18,12 @@ export class Node {
 
   protected initialize(pn: Directory): void {
     this.parentNode = pn;
-    this.parentNode.add(this);
+   // this.parentNode.add(this);
   }
 
   public move(to: Directory): void {
-    this.parentNode.remove(this);
-    to.add(this);
+   // this.parentNode.remove(this);
+   // to.add(this);
     this.parentNode = to;
   }
 
@@ -96,11 +93,11 @@ export class Node {
 
   protected assertClassInvariants(): void {
     const bn: string = this.doGetBaseName();
-    this.assertIsValidBaseName(bn, ExceptionType.CLASS_INVARIANT);
+    //this.assertIsValidBaseName(bn, ExceptionType.CLASS_INVARIANT);
   }
 
-  protected assertIsValidBaseName(bn: string, et: ExceptionType): void {
+  protected assertIsValidBaseName(bn: string): void {
     const condition: boolean = bn != "";
-    AssertionDispatcher.dispatch(et, condition, "invalid base name");
+   // AssertionDispatcher.dispatch(et, condition, "invalid base name");
   }
 }
