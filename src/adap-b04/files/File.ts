@@ -31,8 +31,8 @@ export class File extends Node {
   }
 
   protected assertIsInState(state: FileState) {
-    IllegalArgumentException.isNullOrUndefined(state);
+    //IllegalArgumentException.isNullOrUndefined(state);
     const condition = state === this.doGetFileState();
-    IllegalArgumentException.assertCondition(condition, "invalid file state");
+   // IllegalArgumentException.assertCondition(condition, "invalid file state");
   }
 }

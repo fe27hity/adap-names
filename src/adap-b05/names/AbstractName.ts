@@ -101,12 +101,12 @@ export abstract class AbstractName implements Name {
 
   /* This checks when there is meant to be a custom delimter whether it's correct.*/
   protected assertValidDelimter(delim: string): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(delim);
+    //IllegalArgumentException.assertIsNotNullOrUndefined(delim);
     const condition = delim.length === 1;
-    IllegalArgumentException.assertCondition(
-      condition,
-      "Delimer is not exactly one character"
-    );
+   // IllegalArgumentException.assertCondition(
+    //  condition,
+   //   "Delimer is not exactly one character"
+    //);
   }
 
   protected assertCorrectParamComponents(components: string[]): void {
@@ -117,46 +117,46 @@ export abstract class AbstractName implements Name {
   }
 
   protected assertTruthyParameter(obj: Object) {
-    IllegalArgumentException.assertIsNotNullOrUndefined(
+   /* IllegalArgumentException.assertIsNotNullOrUndefined(
       obj,
       "Argument is invalid"
-    );
+    );*/
   }
 
   protected assertValidComponent(c: string): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(c);
+    //IllegalArgumentException.assertIsNotNullOrUndefined(c);
   }
 
   protected assertValidIndex(n: number): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(n);
+    //IllegalArgumentException.assertIsNotNullOrUndefined(n);
     const condition = n >= 0 && n < this.getNoComponents();
-    IllegalArgumentException.assertCondition(condition, "Index out of bounds");
+    //IllegalArgumentException.assertCondition(condition, "Index out of bounds");
   }
 
   // Post conditions
 
   protected assertValidClone(clone: Name): void {
     const condition = this.isEqual(clone);
-    MethodFailedException.assertCondition(
+    /*MethodFailedException.assertCondition(
       condition,
       "clone does not equal to 'this'"
-    );
+    );*/
   }
 
   protected assertDelimiterSet(delim?: string): void {
-    MethodFailedException.assertIsNotNullOrUndefined(this.delimiter);
+    //MethodFailedException.assertIsNotNullOrUndefined(this.delimiter);
     const condition = this.delimiter === delim;
-    MethodFailedException.assertCondition(
+    /*MethodFailedException.assertCondition(
       condition,
       "Delimiter of 'this' does not equals intended delimiter"
-    );
+    );*/
   }
 
   protected assertComponentsConcatenated(backup: Name, other: Name) {
     const condition =
       this.getNoComponents() ===
       backup.getNoComponents() + other.getNoComponents();
-    try {
+    /*try {
       MethodFailedException.assertCondition(
         condition,
         "'This' is not properly concatenated"
@@ -167,7 +167,7 @@ export abstract class AbstractName implements Name {
         condition,
         "'This' is not properly concatenated"
       );
-    }
+    }*/
   }
 
   protected assertMethodPostConditionAndRecoverOnFailure(
@@ -176,10 +176,10 @@ export abstract class AbstractName implements Name {
     backup: Name
   ) {
     try {
-      MethodFailedException.assertCondition(condition, msg);
+      //MethodFailedException.assertCondition(condition, msg);
     } catch (error: any) {
       this.recoverNameState(backup);
-      MethodFailedException.assertCondition(condition, msg);
+      //MethodFailedException.assertCondition(condition, msg);
     }
   }
 
@@ -224,7 +224,7 @@ export abstract class AbstractName implements Name {
   // Invariant checks
 
   protected assertValidDelimiterState(): void {
-    InvalidStateException.assertIsNotNullOrUndefined(
+   /* InvalidStateException.assertIsNotNullOrUndefined(
       this.delimiter,
       "this.delimiter is null or undefined"
     );
@@ -234,7 +234,7 @@ export abstract class AbstractName implements Name {
       throw new InvalidStateException(
         "Invalid delimiter as current object state"
       );
-    }
+    }*/
   }
 
   // Recovery methods

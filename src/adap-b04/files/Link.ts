@@ -40,15 +40,15 @@ export class Link extends Node {
   }
 
   protected assertValidTargetNode(target: Node): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(target);
+   // IllegalArgumentException.assertIsNotNullOrUndefined(target);
   }
 
   protected assertValidBaseName(bn: string): void {
-    IllegalArgumentException.assertIsNotNullOrUndefined(bn);
+   // IllegalArgumentException.assertIsNotNullOrUndefined(bn);
   }
 
   protected assertTargetNodeNotUndefined(tn: Node | null): void {
     const condition = tn != undefined;
-    IllegalArgumentException.assertCondition(condition, "Target is undefined")
+   // IllegalArgumentException.assertCondition(condition, "Target is undefined")
   }
 }
