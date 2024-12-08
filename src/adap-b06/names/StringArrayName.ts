@@ -37,7 +37,7 @@ export class StringArrayName extends AbstractName {
 
 
     newNameObject.components[i] = c;
-    //this.assertComponentWasSet(backup, i, c);
+    this.assertComponentWasSetAndOriginalUnchanged(newNameObject, backup, i, c);
     return newNameObject;
   }
 
@@ -50,49 +50,38 @@ export class StringArrayName extends AbstractName {
 
 
     newNameObject.components.splice(i, 0, c);
-    //this.assertComponentWasInserted(backup, i, c);
+    this.assertComponentWasInsertedAndOriginalUnchanged(newNameObject, backup, i, c);
     return newNameObject;
   }
 
   public append(c: string): StringArrayName {
     this.assertValidComponent(c);
 
-    const backup = this.deepCopy()
+    const backup = this.deepCopy();
     let newNameObject = this.deepCopy() as StringArrayName;
-
 
     newNameObject.components.push(c);
 
-    //this.assertComponentWasAppended(backup, c);
+    this.assertComponentWasAppendedAndOriginalUnchanged(newNameObject, backup, c);
     return newNameObject;
   }
 
   public remove(i: number): StringArrayName {
     this.assertValidIndex(i);
 
-    const backup = this.deepCopy()
+    const backup = this.deepCopy();
     let newNameObject = this.deepCopy() as StringArrayName;
 
 
     newNameObject.components.splice(i, 1);
 
-    //this.assertComponentWasRemoved(backup, i);
+    this.assertComponentWasRemovedAndOriginalUnchanged(newNameObject, backup, i);
     return newNameObject;
   }
 
-  cloneSubclass(): Name {
-    const clone = Object.assign(new StringArrayName([""]), this);
-    this.assertValidClone(clone);
-    return clone;
-  }
-
-  recoverNameStateImpl(backup: Name): void {
-    this.delimiter = backup.getDelimiterCharacter();
-    let array = [];
-    for (let index = 0; index < backup.getNoComponents(); index++) {
-      array.push(backup.getComponent(index));
-    }
-    this.components = array;
+  public deepCopy(): Name {
+    let copyOfComponets = [...this.components];
+    return new StringArrayName(copyOfComponets, this.delimiter);
   }
 
   protected assertStringArrayNameInvariant() {
@@ -108,11 +97,5 @@ export class StringArrayName extends AbstractName {
     } catch (error) {
       throw new InvalidStateException("a component has an invalid value");
     }
-  }
-
-  public deepCopy(): Name {
-    let copyOfComponets = [...this.components];
-    return new StringArrayName(copyOfComponets, this.delimiter);
-    
   }
 }

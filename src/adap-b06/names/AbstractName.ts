@@ -64,7 +64,8 @@ export abstract class AbstractName implements Name {
   }
 
   public isEqual(other: Name): boolean {
-    return other && this.asDataString() === other.asDataString();
+    IllegalArgumentException.assertIsNotNullOrUndefined(other);
+    return this.asDataString() === other.asDataString();
   }
 
   public getHashCode(): number {
@@ -96,10 +97,6 @@ export abstract class AbstractName implements Name {
   abstract append(c: string): Name;
   abstract remove(i: number): Name;
   abstract deepCopy(): Name;
-
-  abstract cloneSubclass(): Name;
-
-  abstract recoverNameStateImpl(backup: Name): void;
 
   // Pre conditions
 
@@ -157,68 +154,69 @@ export abstract class AbstractName implements Name {
     const condition =
       this.getNoComponents() ===
       backup.getNoComponents() + other.getNoComponents();
-    try {
-      MethodFailedException.assert(
-        condition,
-        "'This' is not properly concatenated"
-      );
-    } catch (error: any) {
-      this.recoverNameState(backup);
-      MethodFailedException.assert(
-        condition,
-        "'This' is not properly concatenated"
-      );
-    }
+    MethodFailedException.assert(
+      condition,
+      "'This' is not properly concatenated"
+    );
   }
 
-  protected assertMethodPostConditionAndRecoverOnFailure(
-    condition: boolean,
-    msg: string,
-    backup: Name
+  protected assertMethodPostCondition(condition: boolean, msg: string) {
+    MethodFailedException.assert(condition, msg);
+  }
+
+  protected assertComponentWasSetAndOriginalUnchanged(
+    newObject: Name,
+    backup: Name,
+    i: number,
+    c: string
   ) {
-    try {
-      MethodFailedException.assert(condition, msg);
-    } catch (error: any) {
-      this.recoverNameState(backup);
-      MethodFailedException.assert(condition, msg);
-    }
-  }
-
-  protected assertComponentWasSet(backup: Name, i: number, c: string) {
-    const condition = this.getComponent(i) === c;
-    this.assertMethodPostConditionAndRecoverOnFailure(
+    const condition = newObject.getComponent(i) === c && this.isEqual(backup);
+    this.assertMethodPostCondition(
       condition,
-      "Components not correctly changed",
-      backup
+      "Components not correctly changed"
     );
   }
 
-  protected assertComponentWasInserted(backup: Name, i: number, c: string) {
+  protected assertComponentWasInsertedAndOriginalUnchanged(
+    newObject: Name,
+    backup: Name,
+    i: number,
+    c: string
+  ) {
     const condition =
-      this.getComponent(i) === c &&
-      backup.getNoComponents() + 1 === this.getNoComponents();
-    this.assertMethodPostConditionAndRecoverOnFailure(
+    newObject.getComponent(i) === c &&
+      backup.getNoComponents() + 1 === newObject.getNoComponents() &&
+      this.isEqual(backup);
+    this.assertMethodPostCondition(
       condition,
-      "Components not correctly changed",
-      backup
+      "Components not correctly changed"
     );
   }
-  protected assertComponentWasAppended(backup: Name, c: string) {
+  protected assertComponentWasAppendedAndOriginalUnchanged(
+    newObject: Name,
+    backup: Name,
+    c: string
+  ) {
     const condition =
-      this.getComponent(this.getNoComponents() - 1) === c &&
-      backup.getNoComponents() + 1 === this.getNoComponents();
-    this.assertMethodPostConditionAndRecoverOnFailure(
+    newObject.getComponent(newObject.getNoComponents() - 1) === c &&
+      backup.getNoComponents() + 1 === newObject.getNoComponents() &&
+      this.isEqual(backup);
+    this.assertMethodPostCondition(
       condition,
-      "Components not correctly changed",
-      backup
+      "Components not correctly changed"
     );
   }
-  protected assertComponentWasRemoved(backup: Name, i: number) {
-    const condition = backup.getNoComponents() - 1 === this.getNoComponents();
-    this.assertMethodPostConditionAndRecoverOnFailure(
+  protected assertComponentWasRemovedAndOriginalUnchanged(
+    newObject: Name,
+    backup: Name,
+    i: number
+  ) {
+    const condition =
+      backup.getNoComponents() - 1 === newObject.getNoComponents() &&
+      this.isEqual(backup);
+    this.assertMethodPostCondition(
       condition,
-      "Components not correctly changed",
-      backup
+      "Components not correctly changed"
     );
   }
 
@@ -236,11 +234,5 @@ export abstract class AbstractName implements Name {
         "Invalid delimiter as current object state"
       );
     }
-  }
-
-  // Recovery methods
-
-  protected recoverNameState(backup: Name): void {
-    this.recoverNameStateImpl(backup);
   }
 }

@@ -4,7 +4,6 @@ import { AbstractName } from "./AbstractName";
 import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringName extends AbstractName {
-
   protected name: string = "";
   protected noComponents: number = 0;
 
@@ -20,7 +19,7 @@ export class StringName extends AbstractName {
     this.assertCorrectParamComponents(componentsWithDelimSplit);
 
     this.name = other;
-    this.noComponents = other == "" ? 1: componentsWithDelimSplit.length;
+    this.noComponents = other == "" ? 1 : componentsWithDelimSplit.length;
 
     this.assertDelimiterSet(delimiter ? delimiter : DEFAULT_DELIMITER);
 
@@ -55,9 +54,11 @@ export class StringName extends AbstractName {
     );
     let arrayOfComponents = newNameObject.name.split(regex);
     arrayOfComponents[i] = c;
-    newNameObject.name = arrayOfComponents.join(newNameObject.getDelimiterCharacter());
+    newNameObject.name = arrayOfComponents.join(
+      newNameObject.getDelimiterCharacter()
+    );
 
-    //this.assertComponentWasSet(backup, i, c);
+    this.assertComponentWasSetAndOriginalUnchanged(newNameObject, backup, i, c);
     return newNameObject;
   }
 
@@ -68,7 +69,6 @@ export class StringName extends AbstractName {
     const backup = this.deepCopy();
     let newNameObject = this.deepCopy() as StringName;
 
-
     const regex = new RegExp(
       `(?<!\\${ESCAPE_CHARACTER})\\${newNameObject.getDelimiterCharacter()}`,
       "g"
@@ -76,9 +76,11 @@ export class StringName extends AbstractName {
     let arrayOfComponents = newNameObject.name.split(regex);
 
     arrayOfComponents.splice(i, 0, c);
-    newNameObject.name = arrayOfComponents.join(newNameObject.getDelimiterCharacter());
+    newNameObject.name = arrayOfComponents.join(
+      newNameObject.getDelimiterCharacter()
+    );
     newNameObject.noComponents++;
-    //this.assertComponentWasInserted(backup, i, c);
+    this.assertComponentWasInsertedAndOriginalUnchanged(newNameObject, backup, i, c);
     return newNameObject;
   }
 
@@ -88,11 +90,10 @@ export class StringName extends AbstractName {
     const backup = this.deepCopy();
     let newNameObject = this.deepCopy() as StringName;
 
-
     newNameObject.name += newNameObject.delimiter + c;
     newNameObject.noComponents++;
 
-    //this.assertComponentWasAppended(backup, c);
+    this.assertComponentWasAppendedAndOriginalUnchanged(newNameObject, backup, c);
     return newNameObject;
   }
 
@@ -102,37 +103,23 @@ export class StringName extends AbstractName {
     const backup = this.deepCopy();
     let newNameObject = this.deepCopy() as StringName;
 
-
     const regex = new RegExp(
       `(?<!\\${ESCAPE_CHARACTER})\\${newNameObject.getDelimiterCharacter()}`,
       "g"
     );
     let arrayOfComponents = newNameObject.name.split(regex);
     arrayOfComponents.splice(i, 1);
-    newNameObject.name = arrayOfComponents.join(newNameObject.getDelimiterCharacter());
+    newNameObject.name = arrayOfComponents.join(
+      newNameObject.getDelimiterCharacter()
+    );
     newNameObject.noComponents--;
 
-    //this.assertComponentWasRemoved(backup, i);
+    this.assertComponentWasRemovedAndOriginalUnchanged(newNameObject, backup, i);
     return newNameObject;
-  }
-
-  public cloneSubclass(): Name {
-    return Object.assign(new StringName(""), this);
   }
 
   public deepCopy(): Name {
     return new StringName(this.name, this.delimiter);
-    
-  }
-
-  recoverNameStateImpl(backup: Name): void {
-    this.delimiter = backup.getDelimiterCharacter();
-    let array = [];
-    for (let index = 0; index < backup.getNoComponents(); index++) {
-      array.push(backup.getComponent(index));
-    }
-    this.name = array.join(this.delimiter);
-    this.noComponents = backup.getNoComponents();
   }
 
   protected assertStringNameInvariant() {
